@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::fs;
+use day1::quicksort;
 
 fn main() {
     let puzzle_input = match read_file("input.txt") {
@@ -9,7 +10,37 @@ fn main() {
 
     let result = greatest_calories(&puzzle_input);
     println!("The elf carrying the most calories has {result} calories.");
+
+    let top_three_elves = top_three_elves(&puzzle_input);
+    let sum_top_three = sum_of_vec(&top_three_elves);
+    println!("The three elves carrying the most calories have a total of {sum_top_three} calories.");
 }
+
+fn sum_of_vec(vec: &Vec<u32>) -> u32 {
+    let mut result = 0;
+
+    for item in vec {
+        result += item;
+    }
+
+    result
+}
+
+fn top_three_elves(puzzle_input: &String) -> Vec<u32> {
+    let items = split_by_item(puzzle_input);
+    let mut calories_per_elf = split_by_elf(items);
+    quicksort(&mut calories_per_elf[..]);
+
+    let mut top_three: Vec<u32> = vec![];
+    let mut end = calories_per_elf.len() - 1;
+
+    for _ in 0..3 {
+        top_three.push(calories_per_elf[end]);
+        end -= 1;
+    }
+
+    top_three
+} 
 
 fn greatest_calories(puzzle_input: &String) -> u32 {
     let items = split_by_item(puzzle_input);
